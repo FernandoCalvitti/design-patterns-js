@@ -63,3 +63,39 @@ const user2 = new User("Sisi", chatRoom);
 
 user1.sendMessage("Helloa <3");
 user2.sendMessage("Same 4 U =)");
+
+/* 
+
+CASE STUDY
+
+On NodeJS with Express, we could make use of this pattern through the callback fn every time certain route is hitted.
+
+Here Add a custom header with the callback fn,
+
+Then we check with another callback fn if it is present o the request.
+
+*/
+
+const app = require("express")();
+const html = require("./data");
+
+app.use(
+  "/",
+  (req, res, next) => {
+    req.headers["test-header"] = 1234;
+    next();
+  },
+  (req, res, next) => {
+    console.log(`Request has test header: ${!!req.headers["test-header"]}`);
+    next();
+  }
+);
+
+app.get("/", (req, res) => {
+  res.set("Content-Type", "text/html");
+  res.send(Buffer.from(html));
+});
+
+app.listen(8080, function () {
+  console.log("Server is running on 8080");
+});
